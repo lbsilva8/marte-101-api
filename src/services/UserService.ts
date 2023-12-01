@@ -78,10 +78,19 @@ export class UserService {
   }
 
   public async emailWelcome(email: string, firstName: string): Promise<void> {
+    const token = jwt.sign(
+      { email: String(email) },
+      (process.env.JWT_PASS as Secret) || null,
+      {
+        expiresIn: '1d',
+        algorithm: 'HS256'
+      }
+    );
     const path = resolve(__dirname, '../templates/emailWelcome.hbs');
     const subject = 'Bem-vindo à Marte 101';
     const variables = {
-      userName: firstName
+      userName: firstName,
+      token: token
     };
     await new NodemailerProvider().sendEmail(email, subject, variables, path);
   }
@@ -100,8 +109,12 @@ export class UserService {
       firstName,
       lastName,
       email,
-      password
+      password,
     });
     return newUser;
+  }
+
+  public async confirmEmail(email: string) {
+    const user = await this.userRepository.findOne({ where: { email } });
   }
 }

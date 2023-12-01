@@ -26,7 +26,7 @@ export class UsersController {
    *             example:
    *               email: user@email.com
    *               password: pass123
-   *               rebemberMe: true
+   *               rememberMe: true
    *             required:
    *               - email
    *               - password
@@ -322,6 +322,21 @@ export class UsersController {
       return res
         .status(httpCodes.UNAUTHORIZED)
         .json({ mensagem: 'User not found.' });
+    }
+  }
+
+  async validation(req: Request, res: Response) {
+    const { token, email } = req.body;
+    try {
+      const { id } = jwt.verify(token, process.env.JWT_PASS) as JwtPayload;
+      const user = await new UserService().findById(id);
+      if (user) {
+        await new UserService().confirmEmail(email);
+        return res.status(httpCodes.OK).send(true);
+      }
+      return res.status(httpCodes.UNAUTHORIZED).send(false);
+    } catch (error) {
+      return res.status(httpCodes.UNAUTHORIZED).json(error);
     }
   }
 }

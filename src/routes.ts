@@ -39,6 +39,12 @@ router.patch(
   new UsersController().updatePassword
 );
 
+router.post(
+  '/users/confim-email',
+  new UsersValidator().tokenValidate(),
+  new UsersController().validation
+);
+
 router.get(
   '/metereology/soles',
   authMiddleware,
