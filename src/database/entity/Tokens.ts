@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BaseEntity,
+  CreateDateColumn
+} from 'typeorm';
 
 @Entity()
 export class Tokens extends BaseEntity {
@@ -7,4 +13,7 @@ export class Tokens extends BaseEntity {
 
   @Column()
   token: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
 }

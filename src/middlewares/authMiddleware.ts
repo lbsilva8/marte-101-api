@@ -37,7 +37,7 @@ export default async function authMiddleware(
 
     const userById = await new UserService().findById(id);
     if (!userById) {
-      await new TokenService().deleteLoginToken(token);
+      await new TokenService().removeToken(token);
       throw new Error('Invalid credentials');
     }
 
@@ -47,7 +47,7 @@ export default async function authMiddleware(
 
     return next();
   } catch (error) {
-    await new TokenService().deleteLoginToken(token);
+    await new TokenService().removeToken(token);
     return res.status(httpCodes.UNAUTHORIZED).json(error.message);
   }
 }

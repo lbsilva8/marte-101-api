@@ -63,6 +63,7 @@ export class UsersController {
         rememberMe
       );
       if (result) {
+        await new TokenService().saveToken(result);
         return res.status(httpCodes.OK).json({
           email: email,
           token: result
@@ -140,7 +141,10 @@ export class UsersController {
   async recoverPassword(req: Request, res: Response) {
     try {
       const { email } = req.body;
-      await new UserService().recoverPassword(email);
+      const token = await new UserService().recoverPassword(email);
+      if (token) {
+        await new TokenService().saveToken(token);
+      }
       return res.status(httpCodes.NO_CONTENT).send();
     } catch (error) {
       return res.status(httpCodes.BAD_REQUEST).json(error);
@@ -301,7 +305,7 @@ export class UsersController {
    *       '400':
    *           description: 'Senha invalida ou Usuario não encontrado.'
    */
-  updatePassword(req: Request, res: Response) {
+  async updatePassword(req: Request, res: Response) {
     const userService = new UserService();
     const { token, password } = req.body;
     try {
@@ -310,6 +314,7 @@ export class UsersController {
         const user = userService.findById(id);
         if (user) {
           userService.updatePassword(id, password);
+          await new TokenService().removeToken(token);
           return res.status(httpCodes.NO_CONTENT).send();
         } else {
           return res
@@ -361,7 +366,7 @@ export class UsersController {
     const user = req.body.authUser;
     const email = user.email;
     try {
-      await new TokenService().deleteToken(token);
+      await new TokenService().removeToken(token);
       await new UserService().sessionEnd(email);
       return res.status(httpCodes.OK).json({ message: 'Logout successful' });
     } catch (error) {
