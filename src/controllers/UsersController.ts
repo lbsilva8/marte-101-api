@@ -63,7 +63,6 @@ export class UsersController {
         rememberMe
       );
       if (result) {
-        await new TokenService().saveToken(result);
         return res.status(httpCodes.OK).json({
           email: email,
           token: result
@@ -363,11 +362,8 @@ export class UsersController {
    */
   async userLogout(req: Request, res: Response) {
     const token = req.body.authToken;
-    const user = req.body.authUser;
-    const email = user.email;
     try {
       await new TokenService().removeToken(token);
-      await new UserService().sessionEnd(email);
       return res.status(httpCodes.OK).json({ message: 'Logout successful' });
     } catch (error) {
       return res.status(httpCodes.BAD_REQUEST).json(error);
