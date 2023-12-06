@@ -3,7 +3,8 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { UserService } from '../services/UserService';
 import { httpCodes } from '../utils/httpCodes';
-import { MetricsService } from '../services/MetricsService';
+import { MetricService } from '../services/MetricService';
+import { TokenService } from '../services/TokenService';
 
 type JwtPayload = {
   id: number;
@@ -72,7 +73,9 @@ export class UsersController {
           .json({ mensagem: 'Incorrect username or password' });
       }
     } catch (error) {
-      return res.status(httpCodes.BAD_REQUEST).json(error);
+      return res
+        .status(httpCodes.BAD_REQUEST)
+        .json({ error: { message: error.message } });
     }
   }
 
@@ -137,7 +140,10 @@ export class UsersController {
   async recoverPassword(req: Request, res: Response) {
     try {
       const { email } = req.body;
-      await new UserService().recoverPassword(email);
+      const token = await new UserService().recoverPassword(email);
+      if (token) {
+        await new TokenService().saveToken(token);
+      }
       return res.status(httpCodes.NO_CONTENT).send();
     } catch (error) {
       return res.status(httpCodes.BAD_REQUEST).json(error);
@@ -213,7 +219,7 @@ export class UsersController {
         email,
         newPassword
       );
-      await new MetricsService().registers();
+      await new MetricService().registers();
       return res
         .status(httpCodes.CREATED)
         .json({ user: { createdAt, id, firstName, lastName, email } });
@@ -298,7 +304,7 @@ export class UsersController {
    *       '400':
    *           description: 'Senha invalida ou Usuario não encontrado.'
    */
-  updatePassword(req: Request, res: Response) {
+  async updatePassword(req: Request, res: Response) {
     const userService = new UserService();
     const { token, password } = req.body;
     try {
@@ -307,6 +313,7 @@ export class UsersController {
         const user = userService.findById(id);
         if (user) {
           userService.updatePassword(id, password);
+          await new TokenService().removeToken(token);
           return res.status(httpCodes.NO_CONTENT).send();
         } else {
           return res
@@ -325,18 +332,41 @@ export class UsersController {
     }
   }
 
-  async validation(req: Request, res: Response) {
-    const { token, email } = req.body;
+  /**
+   * @swagger
+   * /users/logout:
+   *   get:
+   *     summary: Rota para fazer o logout
+   *     security:
+   *       - BearerAuth: []
+   *     tags: [Users]
+   *     consumes:
+   *       - application/json
+   *     produces:
+   *       - application/json
+   *     responses:
+   *       '200':
+   *           description: 'Logout realizado com sucesso'
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 type: object
+   *                 properties:
+   *                   status:
+   *                     type: boolean
+   *                   data:
+   *                     type: object
+   *                     description: 'objeto json de retorno'
+   *       '401':
+   *           description: 'Token invalido'
+   */
+  async userLogout(req: Request, res: Response) {
+    const token = req.body.authToken;
     try {
-      const { id } = jwt.verify(token, process.env.JWT_PASS) as JwtPayload;
-      const user = await new UserService().findById(id);
-      if (user) {
-        await new UserService().confirmEmail(email);
-        return res.status(httpCodes.OK).send(true);
-      }
-      return res.status(httpCodes.UNAUTHORIZED).send(false);
+      await new TokenService().removeToken(token);
+      return res.status(httpCodes.NO_CONTENT).send();
     } catch (error) {
-      return res.status(httpCodes.UNAUTHORIZED).json(error);
+      return res.status(httpCodes.BAD_REQUEST).json(error);
     }
   }
 }

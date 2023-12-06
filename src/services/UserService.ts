@@ -2,15 +2,16 @@ import jwt, { Secret } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { MysqlDataSource } from '../config/database';
-import { User } from '../database/entity/User';
+import { Users } from '../database/entity/Users';
 import { NodemailerProvider } from '../utils/NodemailerProvider';
 import { resolve } from 'path';
+import { TokenService } from './TokenService';
 
 export class UserService {
-  private userRepository: Repository<User>;
+  private userRepository: Repository<Users>;
 
   constructor() {
-    this.userRepository = MysqlDataSource.getRepository(User);
+    this.userRepository = MysqlDataSource.getRepository(Users);
   }
 
   public async authenticate(
@@ -30,14 +31,16 @@ export class UserService {
     if (!secretKey) {
       throw new Error('There is no token key');
     }
+    //confirguração do token
     const expirationToken = rebemberMe ? '24h' : '1h';
     const token = jwt.sign({ id: user.id }, secretKey, {
       expiresIn: expirationToken
     });
+    await new TokenService().saveToken(token);
     return token;
   }
 
-  public async findById(id: number): Promise<User | undefined> {
+  public async findById(id: number): Promise<Users | undefined> {
     return await this.userRepository.findOne({ where: { id } });
   }
 
@@ -56,8 +59,8 @@ export class UserService {
     }
   }
 
-  public async recoverPassword(email: string): Promise<void> {
-    const user: User = await this.userRepository.findOne({ where: { email } });
+  public async recoverPassword(email: string): Promise<string> {
+    const user: Users = await this.userRepository.findOne({ where: { email } });
     if (user) {
       const token = jwt.sign(
         { id: String(user.id) },
@@ -74,11 +77,12 @@ export class UserService {
         token: token
       };
       await new NodemailerProvider().sendEmail(email, subject, variables, path);
+      return token;
     }
   }
 
   public async emailWelcome(email: string, firstName: string): Promise<void> {
-    const user: User = await this.userRepository.findOne({ where: { email } });
+    const user: Users = await this.userRepository.findOne({ where: { email } });
     const token = jwt.sign(
       { email: String(user.id) },
       (process.env.JWT_PASS as Secret) || null,
@@ -96,7 +100,7 @@ export class UserService {
     await new NodemailerProvider().sendEmail(email, subject, variables, path);
   }
 
-  public async findByEmail(email: string): Promise<User | undefined> {
+  public async findByEmail(email: string): Promise<Users | undefined> {
     return await this.userRepository.findOne({ where: { email } });
   }
 
@@ -105,7 +109,7 @@ export class UserService {
     lastName: string,
     email: string,
     password: string
-  ): Promise<User> {
+  ): Promise<Users> {
     const newUser = this.userRepository.save({
       firstName,
       lastName,
@@ -115,7 +119,7 @@ export class UserService {
     return newUser;
   }
 
-  public async confirmEmail(email: string) {
-    const user = await this.userRepository.findOne({ where: { email } });
-  }
+  // public async confirmEmail(email: string) {
+  //   const user = await this.userRepository.findOne({ where: { email } });
+  // }
 }
