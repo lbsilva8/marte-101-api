@@ -20,7 +20,7 @@ export class UsersMetricsController {
   updateMetricOpen(req_: Request, res: Response) {
     const metricService = new MetricsService();
     metricService.updateRegistrationStarted();
-    return res.status(httpCodes.NO_CONTENT);
+    return res.status(httpCodes.NO_CONTENT).send();
   }
 
   /**
@@ -40,6 +40,6 @@ export class UsersMetricsController {
   updateMetricIncomplete(req_: Request, res: Response) {
     const metricService = new MetricsService();
     metricService.updateRegistrationIncompleted();
-    return res.status(httpCodes.NO_CONTENT);
+    return res.status(httpCodes.NO_CONTENT).send();
   }
 }
