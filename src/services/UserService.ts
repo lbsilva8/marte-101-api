@@ -78,8 +78,9 @@ export class UserService {
   }
 
   public async emailWelcome(email: string, firstName: string): Promise<void> {
+    const user: User = await this.userRepository.findOne({ where: { email } });
     const token = jwt.sign(
-      { email: String(email) },
+      { email: String(user.id) },
       (process.env.JWT_PASS as Secret) || null,
       {
         expiresIn: '1d',
@@ -109,7 +110,7 @@ export class UserService {
       firstName,
       lastName,
       email,
-      password,
+      password
     });
     return newUser;
   }
