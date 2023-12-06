@@ -364,7 +364,7 @@ export class UsersController {
     const token = req.body.authToken;
     try {
       await new TokenService().removeToken(token);
-      return res.status(httpCodes.OK).json({ message: 'Logout successful' });
+      return res.status(httpCodes.OK).send();
     } catch (error) {
       return res.status(httpCodes.BAD_REQUEST).json(error);
     }
