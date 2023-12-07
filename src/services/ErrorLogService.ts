@@ -11,8 +11,8 @@ export class ErrorLogService {
 
   public async insertError(error, route): Promise<void> {
     await this.errorLogRepository.insert({
-      errorRoute: route,
-      errorDescription: error.message
+      route: route,
+      description: error.message
     });
   }
 }

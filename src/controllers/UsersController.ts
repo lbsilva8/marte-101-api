@@ -146,7 +146,7 @@ export class UsersController {
       }
       return res.status(httpCodes.NO_CONTENT).send();
     } catch (error) {
-      const route: string = '/users/recover-password: ';
+      const route: string = '/users/recover-password';
       await new ErrorLogService().insertError(error, route);
       return res
         .status(httpCodes.BAD_REQUEST)

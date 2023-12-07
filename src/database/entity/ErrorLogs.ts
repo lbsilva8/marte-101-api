@@ -12,11 +12,11 @@ export class ErrorLogs extends BaseEntity {
   id: number;
 
   @CreateDateColumn()
-  errorDate: Date;
+  createdAt: Date;
 
   @Column()
-  errorRoute: string;
+  route: string;
 
   @Column()
-  errorDescription: string;
+  description: string;
 }
