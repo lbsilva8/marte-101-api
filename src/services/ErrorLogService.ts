@@ -1,17 +1,18 @@
 import { Repository } from 'typeorm';
 import { MysqlDataSource } from '../config/database';
-import { ErrorLog } from '../database/entity/ErrorLog';
+import { ErrorLogs } from '../database/entity/ErrorLogs';
 
 export class ErrorLogService {
-  private errorLogRepository: Repository<ErrorLog>;
+  private errorLogRepository: Repository<ErrorLogs>;
 
   constructor() {
-    this.errorLogRepository = MysqlDataSource.getRepository(ErrorLog);
+    this.errorLogRepository = MysqlDataSource.getRepository(ErrorLogs);
   }
 
-  public async insertError(error): Promise<void> {
+  public async insertError(error, route): Promise<void> {
     await this.errorLogRepository.insert({
-      errorDescription: error
+      errorRoute: route,
+      errorDescription: error.message
     });
   }
 }

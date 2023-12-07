@@ -7,12 +7,15 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class ErrorLog extends BaseEntity {
+export class ErrorLogs extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @CreateDateColumn()
-  dateErro: Date;
+  errorDate: Date;
+
+  @Column()
+  errorRoute: string;
 
   @Column()
   errorDescription: string;

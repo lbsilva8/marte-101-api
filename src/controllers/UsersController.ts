@@ -146,8 +146,8 @@ export class UsersController {
       }
       return res.status(httpCodes.NO_CONTENT).send();
     } catch (error) {
-      const err: string = '/users/recover-password: ' + error.message;
-      await new ErrorLogService().insertError(err);
+      const route: string = '/users/recover-password: ';
+      await new ErrorLogService().insertError(error, route);
       return res.status(httpCodes.BAD_REQUEST).json(error);
     }
   }
@@ -226,8 +226,8 @@ export class UsersController {
         .status(httpCodes.CREATED)
         .json({ user: { createdAt, id, firstName, lastName, email } });
     } catch (error) {
-      const err: string = '/users/new-user: ' + error.message;
-      await new ErrorLogService().insertError(err);
+      const route: string = '/users/new-user';
+      await new ErrorLogService().insertError(error, route);
       return res.status(httpCodes.BAD_REQUEST).json({ error });
     }
   }
