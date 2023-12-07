@@ -268,9 +268,9 @@ export class UsersController {
       const { id } = jwt.verify(token, process.env.JWT_PASS) as JwtPayload;
       const user = await new UserService().findById(id);
       if (user) {
-        return res.status(httpCodes.OK).send(true);
+        return res.status(httpCodes.OK).send();
       }
-      return res.status(httpCodes.UNAUTHORIZED).send(false);
+      return res.status(httpCodes.UNAUTHORIZED).send();
     } catch (error) {
       return res.status(httpCodes.UNAUTHORIZED).json(error);
     }
@@ -412,9 +412,9 @@ export class UsersController {
       if (user) {
         await new UserService().confirmEmail(user);
         await new TokenService().removeToken(token);
-        return res.status(httpCodes.OK).send(true);
+        return res.status(httpCodes.OK).send();
       }
-      return res.status(httpCodes.UNAUTHORIZED).send(false);
+      return res.status(httpCodes.UNAUTHORIZED).send();
     } catch (error) {
       return res.status(httpCodes.UNAUTHORIZED).json(error);
     }
