@@ -253,14 +253,20 @@ export class UsersController {
    *                   type: string
    *     responses:
    *       '200':
-   *           description: 'Booleano autorizando acesso'
+   *           description: 'Acesso autorizado'
    *           content:
    *             application/json:
    *               schema:
-   *                 type: boolean
+   *                 type: object
+   *                 properties:
+   *                   status:
+   *                     type: boolean
+   *                   data:
+   *                     type: object
+   *                     description: 'objeto json de retorno'
    *
    *       '401':
-   *           description: 'Acesso a rota negado'
+   *           description: 'Acesso negado'
    */
   async tokenValidation(req: Request, res: Response) {
     const { token } = req.body;
@@ -268,7 +274,7 @@ export class UsersController {
       const { id } = jwt.verify(token, process.env.JWT_PASS) as JwtPayload;
       const user = await new UserService().findById(id);
       if (user) {
-        return res.status(httpCodes.OK).send();
+        return res.status(httpCodes.NO_CONTENT).send();
       }
       return res.status(httpCodes.UNAUTHORIZED).send();
     } catch (error) {
@@ -395,14 +401,20 @@ export class UsersController {
    *                   type: string
    *     responses:
    *       '200':
-   *           description: 'Booleano autorizando acesso'
+   *           description: 'Acesso autorizado'
    *           content:
    *             application/json:
    *               schema:
-   *                 type: boolean
+   *                 type: object
+   *                 properties:
+   *                   status:
+   *                     type: boolean
+   *                   data:
+   *                     type: object
+   *                     description: 'objeto json de retorno'
    *
    *       '401':
-   *           description: 'Acesso a rota negado'
+   *           description: 'Acesso negado'
    */
   async confirmEmailNewUser(req: Request, res: Response) {
     const { token } = req.body;
@@ -412,7 +424,7 @@ export class UsersController {
       if (user) {
         await new UserService().confirmEmail(user);
         await new TokenService().removeToken(token);
-        return res.status(httpCodes.OK).send();
+        return res.status(httpCodes.NO_CONTENT).send();
       }
       return res.status(httpCodes.UNAUTHORIZED).send();
     } catch (error) {
