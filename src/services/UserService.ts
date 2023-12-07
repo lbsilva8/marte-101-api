@@ -23,6 +23,9 @@ export class UserService {
     if (!user) {
       return undefined;
     }
+    if (!user.confirmedEmail) {
+      return undefined;
+    }
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
       return undefined;
@@ -82,10 +85,21 @@ export class UserService {
   }
 
   public async emailWelcome(email: string, firstName: string): Promise<void> {
+    const user: Users = await this.userRepository.findOne({ where: { email } });
+    const token = jwt.sign(
+      { id: String(user.id) },
+      (process.env.JWT_PASS as Secret) || null,
+      {
+        expiresIn: '1d',
+        algorithm: 'HS256'
+      }
+    );
+    await new TokenService().saveToken(token);
     const path = resolve(__dirname, '../templates/emailWelcome.hbs');
     const subject = 'Bem-vindo à Marte 101';
     const variables = {
-      userName: firstName
+      userName: firstName,
+      token: token
     };
     await new NodemailerProvider().sendEmail(email, subject, variables, path);
   }
@@ -107,5 +121,10 @@ export class UserService {
       password
     });
     return newUser;
+  }
+
+  public async confirmEmail(user: Users) {
+    user.confirmedEmail = true;
+    await this.userRepository.save(user);
   }
 }

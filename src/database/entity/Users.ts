@@ -24,6 +24,9 @@ export class Users extends BaseEntity {
   @Column()
   password: string;
 
+  @Column({ default: false })
+  confirmedEmail: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
 

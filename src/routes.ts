@@ -37,6 +37,12 @@ router.post(
   new UsersController().tokenValidation
 );
 
+router.post(
+  '/users/email-validation',
+  new UsersValidator().tokenValidate(),
+  new UsersController().confirmEmailNewUser
+);
+
 router.patch(
   '/users/password-change',
   new UsersValidator().tokenValidate(),
