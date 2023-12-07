@@ -229,11 +229,8 @@ export class UsersController {
         .status(httpCodes.CREATED)
         .json({ user: { createdAt, id, firstName, lastName, email } });
     } catch (error) {
-<<<<<<< HEAD
       const route: string = '/users/new-user';
       await new ErrorLogService().insertError(error, route);
-=======
->>>>>>> eaa9b2d1204ae52ef9eb9ee00747594281dd32eb
       return res
         .status(httpCodes.BAD_REQUEST)
         .json({ error: { message: error.message } });
