@@ -53,8 +53,8 @@ export class MetereologyController {
       const solesOutput = new WeatherApiTreat().modifySolesKeys(solesInput);
       return res.status(httpCodes.OK).json(solesOutput);
     } catch (error) {
-      const err: string = '/metereology/soles: ' + error.message;
-      await new ErrorLogService().insertError(err);
+      const route: string = '/metereology/soles';
+      await new ErrorLogService().insertError(error, route);
       return res.status(httpCodes.BAD_REQUEST).json(error);
     }
   }

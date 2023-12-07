@@ -7,13 +7,13 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class ErrorLog extends BaseEntity {
+export class Tokens extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @CreateDateColumn()
-  dateErro: Date;
-
   @Column()
-  errorDescription: string;
+  token: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
 }

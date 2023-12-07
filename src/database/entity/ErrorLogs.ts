@@ -2,17 +2,21 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
+  BaseEntity,
   CreateDateColumn
 } from 'typeorm';
 
 @Entity()
-export class Token {
+export class ErrorLogs extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  token: string;
-
   @CreateDateColumn()
   createdAt: Date;
+
+  @Column()
+  route: string;
+
+  @Column()
+  description: string;
 }

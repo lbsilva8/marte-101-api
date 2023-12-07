@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class User extends BaseEntity {
+export class Users extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -23,6 +23,9 @@ export class User extends BaseEntity {
 
   @Column()
   password: string;
+
+  @Column({ default: false })
+  confirmedEmail: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
