@@ -230,7 +230,9 @@ export class UsersController {
     } catch (error) {
       const route: string = '/users/new-user';
       await new ErrorLogService().insertError(error, route);
-      return res.status(httpCodes.BAD_REQUEST).json({ error });
+      return res
+        .status(httpCodes.BAD_REQUEST)
+        .json({ error: { message: error.message } });
     }
   }
 
