@@ -252,7 +252,7 @@ export class UsersController {
    *                 token:
    *                   type: string
    *     responses:
-   *       '200':
+   *       '204':
    *           description: 'Acesso autorizado'
    *           content:
    *             application/json:
@@ -353,7 +353,7 @@ export class UsersController {
    *     produces:
    *       - application/json
    *     responses:
-   *       '200':
+   *       '204':
    *           description: 'Logout realizado com sucesso'
    *           content:
    *             application/json:
@@ -400,7 +400,7 @@ export class UsersController {
    *                 token:
    *                   type: string
    *     responses:
-   *       '200':
+   *       '204':
    *           description: 'Acesso autorizado'
    *           content:
    *             application/json:
