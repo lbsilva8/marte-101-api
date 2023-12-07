@@ -5,6 +5,7 @@ import { UserService } from '../services/UserService';
 import { httpCodes } from '../utils/httpCodes';
 import { MetricService } from '../services/MetricService';
 import { TokenService } from '../services/TokenService';
+import { ErrorLogService } from '../services/ErrorLogService';
 
 type JwtPayload = {
   id: number;
@@ -146,7 +147,11 @@ export class UsersController {
       }
       return res.status(httpCodes.NO_CONTENT).send();
     } catch (error) {
-      return res.status(httpCodes.BAD_REQUEST).json(error);
+      const route: string = '/users/recover-password';
+      await new ErrorLogService().insertError(error, route);
+      return res
+        .status(httpCodes.BAD_REQUEST)
+        .json({ error: { message: error.message } });
     }
   }
 
@@ -224,6 +229,8 @@ export class UsersController {
         .status(httpCodes.CREATED)
         .json({ user: { createdAt, id, firstName, lastName, email } });
     } catch (error) {
+      const route: string = '/users/new-user';
+      await new ErrorLogService().insertError(error, route);
       return res
         .status(httpCodes.BAD_REQUEST)
         .json({ error: { message: error.message } });
