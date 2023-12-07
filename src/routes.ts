@@ -37,17 +37,17 @@ router.post(
   new UsersController().tokenValidation
 );
 
+router.post(
+  '/users/email-validation',
+  new UsersValidator().tokenValidate(),
+  new UsersController().confirmEmailNewUser
+);
+
 router.patch(
   '/users/password-change',
   new UsersValidator().tokenValidate(),
   new UsersValidator().passwordValidate(),
   new UsersController().updatePassword
-);
-
-router.post(
-  '/users/confim-email',
-  new UsersValidator().tokenValidate(),
-  new UsersController().tokenValidation
 );
 
 router.patch(

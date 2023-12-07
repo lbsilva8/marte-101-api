@@ -212,19 +212,21 @@ export class UsersController {
     }
     const newPassword = await bcrypt.hash(password, 10);
     try {
-      await new UserService().emailWelcome(email, firstName);
       const { id, createdAt } = await new UserService().newUser(
         firstName,
         lastName,
         email,
         newPassword
       );
+      await new UserService().emailWelcome(email, firstName);
       await new MetricService().registers();
       return res
         .status(httpCodes.CREATED)
         .json({ user: { createdAt, id, firstName, lastName, email } });
     } catch (error) {
-      return res.status(httpCodes.BAD_REQUEST).json({ error });
+      return res
+        .status(httpCodes.BAD_REQUEST)
+        .json({ error: { message: error.message } });
     }
   }
 
@@ -367,6 +369,54 @@ export class UsersController {
       return res.status(httpCodes.NO_CONTENT).send();
     } catch (error) {
       return res.status(httpCodes.BAD_REQUEST).json(error);
+    }
+  }
+
+  /**
+   * @swagger
+   * /users/email-validation:
+   *   post:
+   *     summary: Rota para validar o token do e-mail.
+   *     tags: [Users]
+   *     consumes:
+   *       - application/json
+   *     produces:
+   *       - application/json
+   *     requestBody:
+   *         required: true
+   *         content:
+   *           application/json:
+   *             schema:
+   *               example:
+   *                 token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiMSIsImlhdCI6MTY5OTQ4MzUxNSwiZXhwIjoxNjk5NTY5OTE1fQ.dNusL_TYB-u617roeRFR1hLjAFPa2NOQTgBvcplrWTw
+   *               type: object
+   *               properties:
+   *                 token:
+   *                   type: string
+   *     responses:
+   *       '200':
+   *           description: 'Booleano autorizando acesso'
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 type: boolean
+   *
+   *       '401':
+   *           description: 'Acesso a rota negado'
+   */
+  async confirmEmailNewUser(req: Request, res: Response) {
+    const { token } = req.body;
+    try {
+      const { id } = jwt.verify(token, process.env.JWT_PASS) as JwtPayload;
+      const user = await new UserService().findById(id);
+      if (user) {
+        await new UserService().confirmEmail(user);
+        await new TokenService().removeToken(token);
+        return res.status(httpCodes.OK).send(true);
+      }
+      return res.status(httpCodes.UNAUTHORIZED).send(false);
+    } catch (error) {
+      return res.status(httpCodes.UNAUTHORIZED).json(error);
     }
   }
 }
