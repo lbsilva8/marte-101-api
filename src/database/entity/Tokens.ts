@@ -2,11 +2,12 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
+  BaseEntity,
   CreateDateColumn
 } from 'typeorm';
 
 @Entity()
-export class Token {
+export class Tokens extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
