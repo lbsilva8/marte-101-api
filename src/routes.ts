@@ -17,6 +17,7 @@ router.post(
 );
 
 router.get('/users/logged', authMiddleware, new UsersController().loggedUser);
+router.get('/users/logout', authMiddleware, new UsersController().userLogout);
 
 router.post(
   '/users/recover-password',
@@ -34,6 +35,12 @@ router.post(
   '/users/token-validation',
   new UsersValidator().tokenValidate(),
   new UsersController().tokenValidation
+);
+
+router.post(
+  '/users/email-validation',
+  new UsersValidator().tokenValidate(),
+  new UsersController().confirmEmailNewUser
 );
 
 router.patch(

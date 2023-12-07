@@ -1,12 +1,12 @@
 import { MysqlDataSource } from '../config/database';
-import { Token } from '../database/entity/Token';
+import { Tokens } from '../database/entity/Tokens';
 import { Repository } from 'typeorm';
 
 export class TokenService {
-  private tokenRepository: Repository<Token>;
+  private tokenRepository: Repository<Tokens>;
 
   constructor() {
-    this.tokenRepository = MysqlDataSource.getRepository(Token);
+    this.tokenRepository = MysqlDataSource.getRepository(Tokens);
   }
 
   async saveToken(token: string) {
@@ -17,7 +17,7 @@ export class TokenService {
     await this.tokenRepository.delete({ token });
   }
 
-  async getToken(token: string): Promise<Token> {
+  async getToken(token: string): Promise<Tokens> {
     return await this.tokenRepository.findOneBy({ token });
   }
 }
