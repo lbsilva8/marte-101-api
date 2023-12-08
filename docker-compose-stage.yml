@@ -3,16 +3,11 @@ version: '3.7'
 services:
   orion-api:
     container_name: orion-api
-    image: orion-api:dev
-    build:
-      context: .
-      target: development
-    volumes:
-      - .:/app
-      - /app/node_modules
+    image: orion-api:stage
     ports:
       - 4444:4444
-    command: npm run start:dev
+    depends_on:
+      - orion-mysql
     environment:
       HOST_SMTP: ${HOST_SMTP}
       MARTE_EMAIL: ${MARTE_EMAIL}
