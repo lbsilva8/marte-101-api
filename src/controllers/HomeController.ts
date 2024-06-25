@@ -6,7 +6,7 @@ export class HomeController {
    * @swagger
    * /:
    *   get:
-   *     summary: Hello
+   *     summary: Rota de incio do servidor.
    *     tags: [Home]
    *     consumes:
    *       - application/json
@@ -27,6 +27,6 @@ export class HomeController {
    *                     description: 'objeto json de retorno'
    */
   hello(_req: Request, res: Response) {
-    return res.status(httpCodes.OK).send('Hello');
+    return res.status(httpCodes.OK).send('Application is running');
   }
 }

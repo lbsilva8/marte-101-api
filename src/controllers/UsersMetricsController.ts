@@ -7,7 +7,7 @@ export class UsersMetricsController {
    * @swagger
    * /metrics/registration-started:
    *   patch:
-   *     summary: Rota para monitorar metricas de cadastros iniciados
+   *     summary: Rota para monitorar metricas de cadastros iniciados.
    *     tags: [Metrics]
    *     consumes:
    *       - application/json
@@ -27,7 +27,7 @@ export class UsersMetricsController {
    * @swagger
    * /metrics/incomplete-registrations:
    *   patch:
-   *     summary: Rota para monitorar metricas de cadastros incompletos
+   *     summary: Rota para monitorar metricas de cadastros incompletos.
    *     tags: [Metrics]
    *     consumes:
    *       - application/json

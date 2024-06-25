@@ -15,7 +15,7 @@ export class UsersController {
    * @swagger
    * /users/login:
    *   post:
-   *     summary: Rota para login do usuário
+   *     summary: Rota para login do usuário.
    *     tags: [Users]
    *     consumes:
    *       - application/json
@@ -84,7 +84,7 @@ export class UsersController {
    * @swagger
    * /users/logged:
    *   get:
-   *     summary: Rota com usuario logado
+   *     summary: Rota com usuario logado.
    *     security:
    *       - BearerAuth: []
    *     tags: [Users]
@@ -115,7 +115,7 @@ export class UsersController {
    * @swagger
    * /users/recover-password:
    *   post:
-   *     summary: Rota para redefinir senha do usuário.
+   *     summary: Rota para redefinir senha do usuário - enviar e-mail de recuperação.
    *     tags: [Users]
    *     consumes:
    *       - application/json
@@ -293,7 +293,7 @@ export class UsersController {
    * @swagger
    * /users/password-change:
    *   patch:
-   *     summary: Rota para alteração de senha
+   *     summary: Rota para alteração de senha.
    *     tags: [Users]
    *     consumes:
    *       - application/json
@@ -351,7 +351,7 @@ export class UsersController {
    * @swagger
    * /users/logout:
    *   get:
-   *     summary: Rota para fazer o logout
+   *     summary: Rota para fazer o logout.
    *     security:
    *       - BearerAuth: []
    *     tags: [Users]
